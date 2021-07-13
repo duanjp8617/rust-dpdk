@@ -843,7 +843,22 @@ impl State {
     }
 }
 
+static DEBUG_FILE: &str = "./debug.txt";
+
+fn debug_print(s: &str) {
+    let mut file = OpenOptions::new().append(true).open(DEBUG_FILE).unwrap();
+    
+    let wb0 = file.write(s.as_bytes()).unwrap();
+    let wb1 = file.write(b"\n").unwrap();
+    assert_eq!(wb0, s.len());
+    assert_eq!(wb1, b"\n".len());
+    
+    file.sync_all().unwrap();
+}
+
 fn main() {
+    let _ = File::create(DEBUG_FILE);
+
     let mut state = State::new();
     state.check_os();
     state.check_compiler();
